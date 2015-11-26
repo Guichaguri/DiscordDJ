@@ -1,0 +1,8 @@
+{
+  "name": "discord.dj",
+  "version": "0.0.1",
+  "dependencies": {
+    "discord.js": "^5.0.1",
+    "ytdl-core": "^0.7.7"
+  }
+}
