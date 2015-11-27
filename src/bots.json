@@ -1,9 +1,0 @@
-[
-  {
-    "email": "account@email.com",
-    "password": "passwordOfTheAccount",
-    "voice": "Voice Channel Name or ID",
-    "log": null,
-    "text": null
-  }
-]

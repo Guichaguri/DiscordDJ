@@ -1,8 +1,31 @@
 {
-  "name": "discord.dj",
+  "name": "discord-dj",
+  "description": "Discord DJ Bot. Let you play music in your server. Inspired by PlugDJ",
   "version": "0.0.1",
+  "main": "index.js",
+  "author": "Guichaguri",
+  "license": "LGPL-2.0",
   "dependencies": {
     "discord.js": "^5.0.1",
+    "node-opus": "^0.1.11",
     "ytdl-core": "^0.7.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guichaguri/DiscordDJ.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "dj",
+    "music",
+    "discorddj"
+  ],
+  "scripts": {
+    "start": "node ./DiscordDJ.js"
+  },
+  "bugs": {
+    "url": "https://github.com/Guichaguri/DiscordDJ/issues"
+  },
+  "homepage": "https://github.com/Guichaguri/DiscordDJ#readme"
 }
