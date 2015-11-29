@@ -14,8 +14,9 @@ After you have installed DiscordDJ, open `bots.json` (it should be in `node_modu
 * **voice:** The voice channel name or ID that the bot should join
 * **log:** The text channel where the bot will send "now playing" messages. Setting this to null will disable log messages
 * **text:** The text channel where the bot will watch for commands. Setting this to null will make it work for all text channels
+* **prefix:** The prefix for the now playing message. Setting this to null will use `**Now Playing:** `
 
-You can add more entries to run more bots in the same server
+You can add multiple entries to run more bots in the same server
 
 ## Running
 To run DiscordDJ, you need to execute `npm start` or `node DiscordDJ.js` inside `node_modules/discord-dj`
@@ -42,3 +43,9 @@ dj.play(new DiscordDJ.FileAudio(user, "path/to/intro.mp3"));
 ```
 
 Note: If you are using DiscordDJ as a library, you don't need to configure `bots.json`
+
+## To-do List
+
+* Add new modes (playlist mode with files, playlist mode with youtube playlists, stream mode)
+* Add "meh" and "woot" in the plug mode
+* Make a clear readme
