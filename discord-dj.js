@@ -5,6 +5,7 @@
 var Discord = require('discord.js');
 var DiscordDJ = require("./lib/Bot/DiscordDJ.js");
 var ChatHandler = require("./lib/Bot/ChatHandler.js");
+var Playlist = require('./lib/Bot/Playlist.js');
 
 function getChat(bot, name) {
     var ch = name;
@@ -86,15 +87,31 @@ function init(data) {
             }
         });
 
-        // Init bot
-        var dj = new DiscordDJ(bot, {
-            limit: data.limit,
-            djRole: getRole(ch.server, data.djRole),
-            listRole: getRole(ch.server, data.listRole)
-        }, {
+        var dj = null;
+        var chatOpt = {
             logChat: getChat(bot, data.logChat),
             nowPlayingPrefix: data.nowPlayingPrefix
-        });
+        };
+
+        // Init bot
+        if(data.playlist == null) {
+            dj = new DiscordDJ(bot, {
+                limit: data.limit,
+                djRole: getRole(ch.server, data.djRole),
+                listRole: getRole(ch.server, data.listRole)
+            }, chatOpt);
+        } else {
+            var playlist = null;
+            if(data.playlist.type == 'youtube') {
+                playlist = new Playlist.YoutubePlaylist(data.playlist.key, data.playlist.url);
+            } else if(data.playlist.type == 'icy') {
+                playlist = new Playlist.IcyPlaylist(data.playlist.url);
+            } else {
+                playlist = new Playlist.FilePlaylist(data.playlist.path);
+            }
+            if(data.playlist.shuffle) playlist.shuffle();
+            dj = new DiscordDJ(bot, playlist, chatOpt);
+        }
 
         dj._email = data.email;
 
