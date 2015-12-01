@@ -7,6 +7,8 @@ var DiscordDJ = require("./lib/Bot/DiscordDJ.js");
 var ChatHandler = require("./lib/Bot/ChatHandler.js");
 var Playlist = require('./lib/Bot/Playlist.js');
 
+var child_process = require('child_process');
+
 function getChat(bot, name) {
     var ch = name;
     if(name instanceof String || typeof name == 'string') {
@@ -58,7 +60,7 @@ function init(data) {
 
     if(data.email.length == 0 || data.password.length == 0 || data.voice.length == 0) {
         console.log("You need to configure bots.json");
-        process.exit(-1);
+        process.exit(1);
     }
 
     var bot = new Discord.Client();
@@ -83,7 +85,7 @@ function init(data) {
         bot.joinVoiceChannel(ch, function(error) {
             if(error != null) {
                 console.log(error);
-                process.exit(2);
+                process.exit(1);
             }
         });
 
@@ -117,6 +119,22 @@ function init(data) {
 
     });
 
+}
+
+var encoders = ['ffmpeg', 'avconv'];
+var canEncode = false;
+
+for(var i = 0; i < encoders.length; i++) {
+    var r = child_process.spawnSync(encoders[i]);
+    if(!r.error) {
+        canEncode = true;
+        break;
+    }
+}
+
+if(!canEncode) {
+    console.log("FFmpeg or Libav were not found. I can't encode audio");
+    process.exit(1);
 }
 
 bots.forEach(function(data) {
