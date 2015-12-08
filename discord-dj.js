@@ -3,8 +3,9 @@
 */
 
 var Discord = require('discord.js');
-var DiscordDJ = require("./lib/Bot/DiscordDJ.js");
-var ChatHandler = require("./lib/Bot/ChatHandler.js");
+var DiscordDJ = require('./lib/Bot/DiscordDJ.js');
+var DJMode = require('./lib/Bot/DJMode.js');
+var Commands = require('./lib/Bot/Commands.js');
 var Playlist = require('./lib/Bot/Playlist.js');
 
 var child_process = require('child_process');
@@ -36,24 +37,20 @@ function getRole(server, name) {
 
 var bots = require('./bots.json');
 
-// Add custom command
-ChatHandler.commands.djrestart = {
-    alias: ["dj-restart", "dj-refresh", "dj-reload"],
-    run: function(user, bot, dj, msg, args) {
-        if(!ChatHandler.hasPermission("managePermissions", user, bot, msg, false)) {
-            ChatHandler.msgNoPerm(user, dj);
-            return;
-        }
-        dj.destroy();
-        bot.logout(function() {
-            bots = require('./bots.json'); // Reload list
-            bots.forEach(function(data) {
-                if(data.email == dj._email) {
-                    init(data);
-                }
-            });
-        });
+var reloadCmd = function(user, bot, dj, msg, args) {
+    if(!Commands.hasPermission("managePermissions", user, bot, msg, false)) {
+        Commands.msgNoPerm(user, dj);
+        return;
     }
+    dj.destroy();
+    bot.logout(function() {
+        bots = require('./bots.json'); // Reload list
+        bots.forEach(function(data) {
+            if(data.email == dj._email) {
+                init(data);
+            }
+        });
+    });
 };
 
 function init(data) {
@@ -95,7 +92,13 @@ function init(data) {
             nowPlayingPrefix: data.nowPlayingPrefix
         };
 
-        // Init bot
+        dj = new DiscordDJ(bot, new DJMode({
+            limit: data.limit,
+            djRole: getRole(ch.server, data.djRole),
+            listRole: getRole(ch.server, data.listRole)
+        }), chatOpt);
+
+        /*// Init bot
         if(data.playlist == null) {
             dj = new DiscordDJ(bot, {
                 limit: data.limit,
@@ -113,9 +116,10 @@ function init(data) {
             }
             if(data.playlist.shuffle) playlist.shuffle();
             dj = new DiscordDJ(bot, playlist, chatOpt);
-        }
+        }*/
 
         dj._email = data.email;
+        dj.registerCommand('reload', ['dj-reload', 'dj-relog'], reloadCmd);
 
     });
 
