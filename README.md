@@ -16,4 +16,4 @@ It's not released yet. Here some of the features that it will have in the final 
 * Smart Information
 * Everything is configurable
 * Open Source
-* Developer API (can be integrated with other bots and can have addons)
+* Developer API (can be integrated with other bots and have addons)

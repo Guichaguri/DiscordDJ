@@ -89,7 +89,8 @@ function init(data) {
         var dj = null;
         var chatOpt = {
             logChat: getChat(bot, data.logChat),
-            nowPlayingPrefix: data.nowPlayingPrefix
+            nowPlayingPrefix: data.nowPlayingPrefix,
+            infoChat: getChat(bot, 'manueldj')
         };
 
         dj = new DiscordDJ(bot, new DJMode({

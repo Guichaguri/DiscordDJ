@@ -9,7 +9,6 @@
     "discord.js": "^5.0.1",
     "icy": "^2.0.0",
     "node-opus": "^0.1.11",
-    "through2": "^2.0.0",
     "ytdl-core": "^0.7.7"
   },
   "repository": {
