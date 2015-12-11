@@ -7,13 +7,14 @@ It's not released yet. Here some of the features that it will have in the final 
 
 * Play a file-based playlist
 * Play a Youtube playlist
+* Play a Soundcloud playlist
 * Play a Shoutcast/Icecast stream
-* Let your users play Youtube videos
+* Let your users play Youtube videos or Soundcloud tracks
   * Similar to Plug.DJ
-  * Wait List and DJ Booth (with roles)
+  * Wait List and DJ Booth (with optional roles)
 * Like and Dislikes (more dislikes than likes = auto-skip)
 * Smart Song History
 * Smart Information
-* Everything is configurable
+* Flexible configuration
 * Open Source
 * Developer API (can be integrated with other bots and have addons)
