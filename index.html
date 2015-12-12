@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>DiscordDJ</title>
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="dns-prefetch" href="//code.jquery.com">
+
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+        <meta http-equiv="content-language" content="en">
+
+        <meta name="robots" content="all">
+        <meta name="googlebot" content="all">
+        <meta name="language" content="portuguese">
+        <meta name="distribution" content="global">
+        <meta name="rating" content="general">
+        <meta name="revisit-after" content="2 weeks">
+        <meta name="keywords" content="discorddj, discord, bot, dj, dj bot, bot dj, discord dj">
+        <meta name="description" content="DiscordDJ is a bot for Discord that let you play music inside a voice channel">
+        <meta name="author" content="Guilherme Chaguri">
+        <meta name="subject" content="discorddj, discord, bot, dj, dj bot, bot dj, discord dj">
+        <meta name="title" content="DiscordDJ">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,300" rel="stylesheet" type="text/css">
+        <style>
+            body, html {
+                margin: 0px;
+                padding: 0px;
+                background: #ffffff;
+                color: #435661;
+                font-family: 'Roboto', Roboto, sans-serif;
+                font-size: 110%;
+                font-size: 1.1rem;
+                height: 100%;
+            }
+
+            a {
+                color: #3498DB;
+                text-decoration: none;
+            }
+            a:hover {
+                color: #206694;
+                text-decoration: underline;
+            }
+
+            #title {
+                min-height: 100%;
+                height: 100%;
+                width: 100%;
+                background: #171F22;
+            }
+            #title #bg {
+                height: 100%;
+                width: 100%;
+                background: url('background.jpg') fixed;
+                background-size: cover;
+                opacity: 0.9;
+            }
+
+            header {
+                position: absolute;
+                top: 49%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                color: #ffffff;
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+            }
+
+            header h1 {
+                font-size: 3.5em;
+                font-weight: 400;
+                margin: 0px;
+                padding: 0px;
+                color: #ffffff;
+                background-image: -webkit-linear-gradient(92deg, #c0c0c0, #ffffff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: none;
+                filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+                -webkit-filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+            }
+
+            h2, h3 {
+                font-family: 'Roboto', Roboto, sans-serif;
+                font-weight: 300;
+                color: #2ECC71;
+            }
+
+            h2 {
+                font-size: 2.5em;
+                margin: 0.25em 0px;
+            }
+            h3 {
+                font-size: 1.5em;
+                margin: 0.25em 0px;
+                color: #206694;
+            }
+
+            ol li span {
+                font-family: 'Roboto', Roboto, sans-serif;
+                font-size: 150%;
+                font-weight: 300;
+                color: #206694;
+            }
+            ol li div {
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                overflow: hidden;
+                transition: all .25s ease-in-out;
+                -moz-transition: all .25s ease-in-out;
+                -webkit-transition: all .25s ease-in-out;
+            }
+            ol li.hidden div {
+                transform: translateX(-50px);
+                opacity: 0;
+                visibility: collapse;
+                height: 0px !important;
+            }
+
+            code {
+                background: rgba(0,0,0,0.06);
+                font-size: 85%;
+                padding: 0.2em;
+            }
+
+            input, select {
+                border: 1px solid #A9A9A9;
+                color: #A9A9A9;
+                border-radius: 20px;
+                padding: 7px 10px;
+                font-size: 1rem;
+                font-family: 'Roboto', Roboto;
+                font-weight: 300;
+                transition: all .25s ease-in-out;
+                -moz-transition: all .25s ease-in-out;
+                -webkit-transition: all .25s ease-in-out;
+            }
+            input[type=text], input[type=password] {
+                min-width: 300px;
+            }
+            input:focus, select:focus {
+                border: 1px solid #546E7A;
+                color: #546E7A;
+                outline: none;
+            }
+
+            table, table tr, table tr td {
+                border: 0px;
+            }
+            table tr td {
+                padding: 5px 10px;
+            }
+
+            img {
+                border-radius: 7px;
+            }
+
+            #content {
+                padding: 1% 2.5% 1% 2.5%;
+                box-shadow: 0px 0px 2em rgba(0, 0, 0, 0.5);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="title"><div id="bg"></div></div>
+        <header>
+            <h1>DiscordDJ</h1>
+            &#127911; Music Bot
+        </header>
+        <div id="content">
+            <div style="text-align: center;">
+                <a class="github-button" href="https://github.com/Guichaguri/DiscordDJ" data-icon="octicon-eye" data-style="mega" data-count-href="/Guichaguri/DiscordDJ/watchers" data-count-api="/repos/Guichaguri/DiscordDJ#subscribers_count" data-count-aria-label="# watchers on GitHub" aria-label="Watch DiscordDJ on GitHub">Watch</a>
+                <a class="github-button" href="https://github.com/Guichaguri/DiscordDJ" data-icon="octicon-star" data-style="mega" data-count-href="/Guichaguri/DiscordDJ/stargazers" data-count-api="/repos/Guichaguri/DiscordDJ#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DiscordDJ on GitHub">Star</a>
+                <p>DiscordDJ is a bot for Discord that let you play music inside a voice channel</p>
+                <br>
+                <strong>Work In Progress</strong><br>
+                <br>
+            </div>
+            <h2>Features</h2>
+            <ul>
+                <li>Play a file-based playlist</li>
+                <li>Play a Youtube playlist</li>
+                <li>Play a Soundcloud playlist</li>
+                <li>Play a Shoutcast/Icecast stream</li>
+                <li>
+                    Let your users play Youtube videos or Soundcloud tracks
+                <li>Similar to Plug.DJ</li>
+                <li>Wait List and DJ Booth (with optional roles)</li>
+                </li>
+                <li>Like and Dislikes (more dislikes than likes = auto-skip)</li>
+                <li>Smart Song History</li>
+                <li>Smart Information</li>
+                <li>Flexible configuration</li>
+                <li>Open Source</li>
+                <li>Developer API (can be integrated with other bots and have addons)</li>
+            </ul>
+        </div>
+        <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(window).scroll(function () {
+                    var top = $(this).scrollTop();
+                    var title = $('#title #bg');
+                    var height = title.height();
+                    if(top > height) return;
+                    var c = top / height;
+                    var v = 0.5 - (c / 2);
+                    title.css('opacity', v);
+                    title.css('background-position-y', '-' + (c * 100) + 'px');
+                    $('header').css('top', ((c * 35) + 49) + '%');
+                });
+                $(window).scroll();
+                $('ol li span').each(function() {
+                    var li = $(this).parent();
+                    var div = li.find('div');
+                    div.css('height', div.height());
+                    li.addClass('hidden');
+                }).click(function() {
+                    $(this).parent().toggleClass('hidden');
+                });
+            });
+        </script>
+    </body>
+</html>
