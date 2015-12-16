@@ -1,147 +1,254 @@
-/*
-* This is the run script of the module of a PlugDJ inspired bot
-*/
 
 var Discord = require('discord.js');
+
 var DiscordDJ = require('./lib/Bot/DiscordDJ.js');
 var DJMode = require('./lib/Bot/DJMode.js');
-var Commands = require('./lib/Bot/Commands.js');
-var Playlist = require('./lib/Bot/Playlist.js');
+var PlaylistMode = require('./lib/Bot/PlaylistMode.js');
 
-var child_process = require('child_process');
+var YoutubePlaylist = require('./lib/Audio/Playlist/YoutubePlaylist.js');
+var FilePlaylist = require('./lib/Audio/Playlist/FilePlaylist.js');
+var SoundcloudPlaylist = require('./lib/Audio/Playlist/SoundcloudPlaylist.js');
+var DirectoryPlaylist = require('./lib/Audio/Playlist/DirectoryPlaylist.js');
 
-function getChat(bot, name) {
-    var ch = name;
-    if(name instanceof String || typeof name == 'string') {
-        bot.channels.forEach(function(channel) {
-            if(!(channel instanceof Discord.TextChannel)) return;
-            if(channel.id == name || channel.name == name) {
-                ch = channel;
-            }
-        });
+var utils = {
+
+    getChat: function(server, name) {
+        var ch = name;
+        if(name instanceof String || typeof name == 'string') {
+            server.channels.forEach(function(channel) {
+                if(!(channel instanceof Discord.TextChannel)) return;
+                if(channel.id == name || channel.name == name) {
+                    ch = channel;
+                }
+            });
+        }
+        return ch;
+    },
+
+    getVoice: function(server, name) {
+        var ch = name;
+        if(name instanceof String || typeof name == 'string') {
+            server.channels.forEach(function (channel) {
+                if (!(channel instanceof Discord.VoiceChannel)) return;
+                if (channel.id == name || channel.name == name) {
+                    ch = channel;
+                }
+            });
+        }
+        return ch;
+    },
+
+    getRole: function(server, name) {
+        var rl = name;
+        if(name instanceof String || typeof name == 'string') {
+            server.roles.forEach(function(role) {
+                if(role.id == name || role.name == name) {
+                    rl = role;
+                }
+            });
+        }
+        return rl;
+    },
+
+    check: function(val) {
+        return (val == null) || (typeof val == 'undefined') || (val.length == 0);
     }
-    return ch;
-}
-
-function getRole(server, name) {
-    var rl = name;
-    if(name instanceof String || typeof name == 'string') {
-        server.roles.forEach(function(role) {
-            if(role.id == name || role.name == name) {
-                rl = role;
-            }
-        });
-    }
-    return rl;
-}
-
-var bots = require('./bots.json');
-
-var reloadCmd = function(user, bot, dj, msg, args) {
-    if(!Commands.hasPermission("managePermissions", user, bot, msg, false)) {
-        Commands.msgNoPerm(user, dj);
-        return;
-    }
-    dj.destroy();
-    bot.logout(function() {
-        bots = require('./bots.json'); // Reload list
-        bots.forEach(function(data) {
-            if(data.email == dj._email) {
-                init(data);
-            }
-        });
-    });
 };
 
-function init(data) {
+var configCommand = function(user, bot, dj, msg, args) {
+    if(args.length < 2) {
 
-    if(data.email.length == 0 || data.password.length == 0 || data.voice.length == 0) {
-        console.log("You need to configure bots.json");
+        var helpMsg = '**Config Help**\n';
+        helpMsg += '`config voice [voice channel name]` Changes the music voice channel\n';
+        helpMsg += '`config history [text channel name]` Changes the song history text channel. Leave it empty to disable\n';
+        helpMsg += '`config info [text channel name]` Changes the informational text channel. Leave it empty to disable\n';
+        helpMsg += '`config reload` Reloads the config file.\n';
+        dj.sendPM(user, helpMsg);
+
+    } else if(args[1] == 'voice') {
+
+        if(args.length < 3) {
+            dj.sendPM('config voice [voice channel name]');
+        } else {
+            var ch = utils.getVoice(msg.channel.server, args[2]);
+            bot.joinVoiceChannel(ch, function(error) {
+                if(error != null) {
+                    dj.sendPM(user, 'Failed to join voice channel: ' + error);
+                } else {
+                    //TODO
+                }
+            });
+        }
+
+    } else if(args[1] == 'history') {
+
+    } else if(args[1] == 'info') {
+
+    } else if(args[1] == 'reload') {
+
+    }
+};
+
+function checkData(data) {
+    var c = false;
+    c = c || utils.check(data['email']);
+    c = c || utils.check(data['password']);
+    c = c || utils.check(data['voice-channel']);
+    c = c || utils.check(data['mode']);
+    c = c || utils.check(data['mode']['type']);
+
+    return c;
+}
+
+function initializeBot(data) {
+
+    if(checkData(data)) {
+        console.log('bots.json is not configured!');
         process.exit(1);
     }
 
     var bot = new Discord.Client();
+    var dj = null;
 
-    bot.login(data.email, data.password, function(error) {
-        if (error != null) {
+    bot.login(data['email'], data['password'], function(error) {
+        if(error != null) {
             console.log(error);
             process.exit(1);
         }
     });
 
-    bot.on("ready", function() {
+    bot.on('ready', function() {
 
-        // Join voice channel
-        var ch = data.voice;
-        bot.channels.forEach(function(channel) {
-            if(!(channel instanceof Discord.VoiceChannel)) return;
-            if(channel.id == data.voice || channel.name == data.voice) {
-                ch = channel;
+        var server = null;
+        bot.servers.forEach(function(sv) {
+            if(sv.id == data['server'] || sv.name == data['server']) {
+                server = sv;
             }
         });
-        bot.joinVoiceChannel(ch, function(error) {
+        if(server == null) {
+            console.log('Server not found');
+            process.exit(1);
+        }
+
+        var voiceChannel = utils.getVoice(server, data['voice-channel']);
+        var songChannel = utils.check(data['song-history']) ? null : utils.getChat(server, data['song-history']);
+        var infoChannel = utils.check(data['info-channel']) ? null : utils.getChat(server, data['info-channel']);
+
+        bot.joinVoiceChannel(voiceChannel, function(error) {
             if(error != null) {
                 console.log(error);
                 process.exit(1);
             }
         });
 
-        var dj = null;
-        var chatOpt = {
-            logChat: getChat(bot, data.logChat),
-            nowPlayingPrefix: data.nowPlayingPrefix,
-            infoChat: getChat(bot, 'manueldj')
-        };
+        var modeData = data['mode'];
+        var mode = null;
 
-        dj = new DiscordDJ(bot, new DJMode({
-            limit: data.limit,
-            djRole: getRole(ch.server, data.djRole),
-            listRole: getRole(ch.server, data.listRole)
-        }), chatOpt);
+        switch(modeData['type']) {
+            case 'dj':
+                mode = new DJMode(modeData['waitlist']);
+                break;
+            case 'playlist':
+                var plData = modeData['playlist'];
+                var playlist = null;
+                switch(plData['type']) {
+                    case 'youtube':
+                        playlist = new YoutubePlaylist(plData['key'], plData['url']);
+                        break;
+                    case 'soundcloud':
+                        playlist = new SoundcloudPlaylist(plData['key'], plData['url']);
+                        break;
+                    case 'file':
+                        playlist = new FilePlaylist(plData['path']);
+                        break;
+                    case 'directory':
+                        playlist = new DirectoryPlaylist(plData['path']);
+                        break;
+                }
+                mode = new PlaylistMode(playlist);
+                break;
+        }
 
-        /*// Init bot
-        if(data.playlist == null) {
-            dj = new DiscordDJ(bot, {
-                limit: data.limit,
-                djRole: getRole(ch.server, data.djRole),
-                listRole: getRole(ch.server, data.listRole)
-            }, chatOpt);
-        } else {
-            var playlist = null;
-            if(data.playlist.type == 'youtube') {
-                playlist = new Playlist.YoutubePlaylist(data.playlist.key, data.playlist.url);
-            } else if(data.playlist.type == 'icy') {
-                playlist = new Playlist.IcyPlaylist(data.playlist.url);
-            } else {
-                playlist = new Playlist.FilePlaylist(data.playlist.path);
-            }
-            if(data.playlist.shuffle) playlist.shuffle();
-            dj = new DiscordDJ(bot, playlist, chatOpt);
-        }*/
-
-        dj._email = data.email;
-        dj.registerCommand('reload', ['dj-reload', 'dj-relog'], reloadCmd);
+        dj = new DiscordDJ(bot, mode, {
+            'song-history': songChannel,
+            'info-channel': infoChannel,
+            'np-prefix': data['np-prefix']
+        });
 
     });
 
 }
 
-var encoders = ['ffmpeg', 'avconv'];
-var canEncode = false;
+function configureBot(data, bot, dj) {
 
-for(var i = 0; i < encoders.length; i++) {
-    var r = child_process.spawnSync(encoders[i]);
-    if(!r.error) {
-        canEncode = true;
-        break;
+    //TODO FINISH
+
+
+    if(dj == null) {
+
+        var rl = require('readline').createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        function loginQuestion() {
+            rl.question("Email: ", function(email) {
+                rl.question("Password: ", function(pass) {
+
+                    bot.login(email, pass, function(error) {
+                        if(error != null) {
+                            console.log("Login failed: " + error);
+                            loginQuestion();
+                        } else {
+                            data['email'] = email;
+                            data['password'] = pass;
+                            serverQuestion();
+                        }
+                    });
+
+                });
+            });
+        }
+        function serverQuestion() {
+            rl.question("Server Invite Link: ", function(invite) {
+
+                bot.joinServer(invite, function(error, server) {
+                    if(error != null) {
+                        console.log("Invalid Link: " + error);
+                        serverQuestion();
+                    } else {
+                        data['server'] = server.id;
+                        dj = new DiscordDJ();
+                        configureBot(data, bot, dj);
+                        rl.close();
+                    }
+                });
+
+            });
+        }
+
+        loginQuestion();
+
+    } else {
+
+        dj.deregisterCommands();
+        dj.registerCommand('joinvoice', ['join-voice', 'joinvoice', 'joinvc'], function(user, bot, dj, msg, args) {
+            if(args.length < 2) {
+                dj.sendPM(user, args[0] + ' [voice channel name]');
+                return;
+            }
+            var ch = utils.getVoice(msg.channel.server, args[1]);
+            bot.joinVoiceChannel(ch, function(error) {
+                if(error != null) {
+                    dj.sendPM(user, 'Failed to join voice channel: ' + error);
+                } else {
+                    dj.deregisterCommands();
+                    dj.registerCommands();
+                }
+            });
+        });
+
+        console.log("Hey! I joined the server, but I don't know which voice channel I should stay");
+        console.log("Use the command 'joinvoice' to join you in the voice channel");
+
     }
 }
-
-if(!canEncode) {
-    console.log("FFmpeg or Libav were not found. I can't encode audio");
-    process.exit(1);
-}
-
-bots.forEach(function(data) {
-    init(data);
-});
