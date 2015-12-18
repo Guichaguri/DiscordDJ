@@ -6,9 +6,8 @@
   "author": "Guichaguri",
   "license": "LGPL-2.0",
   "dependencies": {
-    "discord.js": "^5.0.1",
+    "discordie": "0.0.8",
     "icy": "^2.0.0",
-    "node-opus": "^0.1.11",
     "ytdl-core": "^0.7.7"
   },
   "repository": {
