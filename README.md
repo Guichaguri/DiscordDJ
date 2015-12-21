@@ -17,6 +17,7 @@ It's not released yet. Here some of the features that it will have in the final 
 * Like and Dislikes (more dislikes than likes = auto-skip)
 * Smart Song History
 * Smart Information
+* Multiple voice channels at the same time (this feature is a courtesy of [qeled](https://github.com/qeled)'s wizardry)
 * Flexible configuration
 * Open Source
 * Developer API (can be integrated with other bots and have addons)
