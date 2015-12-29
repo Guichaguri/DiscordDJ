@@ -1,2 +1,3 @@
-node ./discord-dj.js
+@echo off
+node ./runtime/DiscordDJ.js
 pause;

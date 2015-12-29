@@ -1,3 +1,4 @@
+var Utils = require('../lib/Logic/Utils.js');
 var Discordie = require('discordie');
 var child_process = require('child_process');
 
@@ -10,9 +11,11 @@ module.exports = function(bot, data, shouldLogin, callback) {
         output: process.stdout
     });
 
-    function checkEncoder(callback) {
+    console.log('Starting installation...');
+
+    function checkEncoder(cb) {
         var cmds = ["avconv", "ffmpeg", "avconv.exe", "ffmpeg.exe"];
-        if(data.encoderPath != null) cmds.unshift(data.encoderPath);
+        if(Utils.exists(data['encoder-path'])) cmds.unshift(data['encoder-path']);
         var encoder = null;
 
         for(var i = 0; i < cmds.length; i++) {
@@ -29,13 +32,13 @@ module.exports = function(bot, data, shouldLogin, callback) {
             console.log('Please, install FFmpeg or Libav');
             console.log('After you have done that, press enter (leaving it blank)');
             console.log('If it still doesn\'t work, paste the executable path (Example: C://ffmpeg/ffmpeg.exe)');
-            console.log('If you need help, check the wiki: https://github.com/Guichaguri/DiscordDJ/wiki');
+            console.log('http://guichaguri.github.io/DiscordDJ/');
             rl.question("Executable Path: ", function(path) {
-                data.encoderPath = path;
+                data['encoder-path'] = path;
                 checkEncoder();
             });
         } else {
-            callback();
+            cb();
         }
     }
 
@@ -47,15 +50,15 @@ module.exports = function(bot, data, shouldLogin, callback) {
     function login() {
         rl.question("Email: ", function(email) {
             rl.question("Password: ", function(pass) {
-                data.email = email;
-                data.password = pass;
+                data['email'] = email;
+                data['password'] = pass;
                 bot.connect({email: email, password: pass});
             });
         });
     }
 
     function server() {
-        data.token = bot.token;
+        data['token'] = bot.token;
 
         bot.Dispatcher.removeListener(Discordie.Events.GATEWAY_READY, server);
         bot.Dispatcher.removeListener(Discordie.Events.DISCONNECTED, disconnected);
@@ -71,8 +74,12 @@ module.exports = function(bot, data, shouldLogin, callback) {
                         console.log('The channel is not a voice channel.');
                         server();
                     } else {
-                        data.server = res.guild.id;
-                        data.voiceChannel = res.channel.id;
+                        var dj = {
+                            'server': res.guild.id,
+                            'voice-channel': res.channel.id
+                        };
+                        data['djs'] = [dj];
+
                         rl.close();
                         console.log('Basic information configured! The bot is ready to run now.');
                         callback(data);

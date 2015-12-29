@@ -23,7 +23,7 @@
     "discord-dj"
   ],
   "scripts": {
-    "start": "node ./discord-dj.js"
+    "start": "node ./runtime/DiscordDJ.js"
   },
   "bugs": {
     "url": "https://github.com/Guichaguri/DiscordDJ/issues"
