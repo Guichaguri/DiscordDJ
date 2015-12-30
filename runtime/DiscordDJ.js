@@ -12,7 +12,7 @@ if(Discordie == null) {
     process.exit(0);
 }
 
-var config = Utils.include('../config.json');
+var config = Utils.include('config.json');
 var configModified = false;
 var connected = false;
 
@@ -97,7 +97,7 @@ function handleConnection() {
 
     if(configModified) {
         console.log('SAVE CONFIG');
-        require('fs').writeFile('../config.json', JSON.stringify(config), function(error) {
+        require('fs').writeFile('config.json', JSON.stringify(config), function(error) {
             console.log(error == null ? 'Config saved!' : 'An error ocurred while saving the config: ' + error);
         });
     }
