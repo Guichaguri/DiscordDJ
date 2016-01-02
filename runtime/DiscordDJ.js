@@ -4,6 +4,7 @@ var DiscordDJ = require('../lib/index.js');
 var Special = require('./Special.js');
 
 var Discordie = Utils.include('discordie');
+var fs = require('fs');
 
 if(Discordie == null) {
     console.log('DiscordDJ is not installed correctly.');
@@ -11,8 +12,12 @@ if(Discordie == null) {
     console.log('http://guichaguri.github.io/DiscordDJ/');
     process.exit(0);
 }
-
-var config = Utils.include('config.json');
+var config;
+try {
+    config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+} catch(e) {
+    config = null;
+}
 var configModified = false;
 var connected = false;
 
@@ -97,7 +102,7 @@ function handleConnection() {
 
     if(configModified) {
         console.log('SAVE CONFIG');
-        require('fs').writeFile('config.json', JSON.stringify(config), function(error) {
+        fs.writeFile('config.json', JSON.stringify(config), function(error) {
             console.log(error == null ? 'Config saved!' : 'An error ocurred while saving the config: ' + error);
         });
     }
