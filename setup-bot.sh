@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 function end {
     echo ""
@@ -23,13 +23,13 @@ function installError {
     end
 }
 
-which npm -version >/dev/null 2>&1 || npmError
+$(which npm) -version >/dev/null 2>&1 || npmError
 
 echo ""
 echo "NPM is installed!"
 echo "Installing dependencies (that can take a while)"
 
-which npm install >/dev/null 2>&1 || installError
+$(which npm) install >/dev/null 2>&1 || installError
 
 echo ""
 echo "Dependencies are installed."
@@ -41,7 +41,7 @@ echo ""
 read -p "Run the bot now? [Y/N] "
 if [[ $REPLY = [yY] ]]
 then
-    npm start
+    $(which npm) start
     end
 else
     end
