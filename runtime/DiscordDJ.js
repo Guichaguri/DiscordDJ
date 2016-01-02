@@ -12,7 +12,7 @@ if(Discordie == null) {
     process.exit(0);
 }
 
-var config = Utils.include('config.json');
+var config = Utils.include(process.cwd() + '/config.json');
 var configModified = false;
 var connected = false;
 
