@@ -100,15 +100,28 @@ function handleConnection() {
         config['djs'][i] = createDJ(config['djs'][i], manager);
     }
 
+    loadStuff(manager);
+
     if(configModified) {
-        console.log('SAVE CONFIG');
         fs.writeFile('config.json', JSON.stringify(config), function(error) {
             console.log(error == null ? 'Config saved!' : 'An error ocurred while saving the config: ' + error);
         });
     }
+}
+
+function loadStuff(manager) {
+    if(!Utils.exists(config['commands'])) {
+        config['commands'] = {};
+        configModified = true;
+    }
+    config['commands']['prefixes'] = config['commands']['prefixes'] || ['!', '/'];
+
+    config['commands']['prefixes'].forEach(function(prefix) {
+        manager.handler.addCommandPrefix(prefix);
+    });
 
     Special.checkUpdate();
-    //Special.registerCommands();//TODO HANDLER
+    Special.registerCommands(manager.handler);
 }
 
 function handleDisconnection() {

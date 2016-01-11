@@ -54,9 +54,9 @@ function checkUpdate() {
 }
 
 function registerCommands(handler) {
-    handler.registerCommand('info', ['info', 'information', 'about'], info);
-    handler.registerCommand('shutdown', ['shutdown'], shutdown);
-    handler.registerCommand('restart', ['restart', 'reload'], restart);
+    handler.registerCommand('info', ['info', 'information', 'about'], info, '');
+    handler.registerCommand('shutdown', ['shutdown'], shutdown, '');
+    handler.registerCommand('restart', ['restart', 'reload'], restart, '');
     // TODO PERMISSIONS
 }
 

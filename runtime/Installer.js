@@ -35,7 +35,7 @@ module.exports = function(bot, data, shouldLogin, callback) {
             console.log('http://guichaguri.github.io/DiscordDJ/');
             rl.question("Executable Path: ", function(path) {
                 data['encoder-path'] = path;
-                checkEncoder();
+                checkEncoder(cb);
             });
         } else {
             cb();
