@@ -6,7 +6,7 @@
   "author": "Guichaguri",
   "license": "LGPL-2.0",
   "dependencies": {
-    "discordie": "0.0.8",
+    "discordie": "0.1.2",
     "icy": "^2.0.0",
     "ytdl-core": "^0.7.7"
   },

@@ -80,7 +80,7 @@ function createDJ(djCfg, manager) {
     djCfg['voice-channel'] = voiceChannel.id;
 
     console.log('Initializing DJ in "' + voiceChannel.guild.name + '"');
-    var dj = manager.create(voiceChannel, DiscordDJ.BotDJ);
+    var dj = manager.create(voiceChannel, DiscordDJ.DJ);
 
     return djCfg;
 }
