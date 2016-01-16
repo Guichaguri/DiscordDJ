@@ -80,7 +80,11 @@ function createDJ(djCfg, manager) {
     djCfg['voice-channel'] = voiceChannel.id;
 
     console.log('Initializing DJ in "' + voiceChannel.guild.name + '"');
-    var dj = manager.create(voiceChannel, DiscordDJ.DJ);
+    manager.create(voiceChannel, DiscordDJ.BotDJ).then(function(dj) {
+        //TODO finish
+    }, function(err) {
+        console.log('An error occurred. The DJ could not be initialized: ' + err);
+    });
 
     return djCfg;
 }
@@ -88,6 +92,8 @@ function createDJ(djCfg, manager) {
 function handleConnection() {
     console.log('Connected! Initializing the DJs...');
     connected = true;
+
+    bot.User.setStatus(null, {name: "Music"});
 
     if(config['token'] != bot.token) configModified = true;
     config['token'] = bot.token;
