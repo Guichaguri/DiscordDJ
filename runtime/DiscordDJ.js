@@ -79,9 +79,46 @@ function createDJ(djCfg, manager) {
     djCfg['server'] = voiceChannel.guild_id;
     djCfg['voice-channel'] = voiceChannel.id;
 
+    if(!Utils.exists(djCfg['rating'])) {
+        djCfg['rating'] = {
+            'enabled': true,
+            'min-votes': 3,
+            'min-dislikes': 65
+        };
+        configModified = true;
+    }
+    if(!Utils.exists(djCfg['chat-info'])) {
+        djCfg['chat-info'] = {
+            'now-playing-prefix': '**Now Playing:** ',
+            'song-history-channel': null,
+            'info-channel': null
+        };
+        configModified = true;
+    }
+
     console.log('Initializing DJ in "' + voiceChannel.guild.name + '"');
     manager.create(voiceChannel, DiscordDJ.BotDJ).then(function(dj) {
-        //TODO finish
+
+        if(djCfg['rating']['enabled']) {
+            dj.enableRating({
+                minVotes: djCfg['rating']['min-votes'],
+                minDislikes: djCfg['rating']['min-dislikes']
+            });
+        } else {
+            dj.disableRating();
+        }
+
+        if(Utils.exists(djCfg['chat-info']['song-history-channel']) ||
+            Utils.exists(djCfg['chat-info']['info-channel'])) {
+            dj.enableInfo({
+                nowPlayingPrefix: djCfg['chat-info']['now-playing-prefix'],
+                songHistoryChannel: djCfg['chat-info']['song-history-channel'],
+                infoChannel: djCfg['chat-info']['info-channel']
+            });
+        } else {
+            dj.disableInfo();
+        }
+
     }, function(err) {
         console.log('An error occurred. The DJ could not be initialized: ' + err);
     });
