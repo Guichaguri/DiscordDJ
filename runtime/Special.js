@@ -17,7 +17,7 @@ var info = function(handler, obj, userObj, dj, args) {
         msg += 'Download now v' + updateAvailable + ' at:\n';
     }
     msg += 'http://guichaguri.github.io/DiscordDJ/\n';
-    handler.sendPrivateMessage(msg);
+    handler.sendPrivateMessage(userObj, msg);
 };
 
 var shutdown = function(handler, obj, userObj, dj, args) {
@@ -26,6 +26,12 @@ var shutdown = function(handler, obj, userObj, dj, args) {
 
 var restart = function(handler, obj, userObj, dj, args) {
     //TODO
+};
+
+var skipAll = function(handler, obj, userObj, dj, args) {
+    if(dj == null) return;
+    dj.dj.musicQueue = [];
+    dj.skip();//TODO remove
 };
 
 function checkUpdate() {
@@ -57,9 +63,10 @@ function registerCommands(handler) {
     handler.registerCommand('info', ['info', 'information', 'about'], info, null);
     handler.registerCommand('shutdown', ['shutdown'], shutdown, handler.permissions.MANAGE_PERMISSIONS);
     handler.registerCommand('restart', ['restart', 'reload'], restart, handler.permissions.MANAGE_PERMISSIONS);
+    handler.registerCommand('skipall', ['skipall'], skipAll, handler.permissions.MANAGE_PERMISSIONS);
 }
 
 module.exports = {
     checkUpdate: checkUpdate,
     registerCommands: registerCommands
-}
+};

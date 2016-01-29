@@ -3,7 +3,7 @@ var DiscordDJ = require('../lib/index.js');
 
 var Special = require('./Special.js');
 
-var Discordie = Utils.include('discordie');
+var Discordie = require('discordie');
 var fs = require('fs');
 
 if(Discordie == null) {
@@ -54,6 +54,9 @@ function connect() {
 }
 
 function createDJ(djCfg, manager) {
+
+    // Find voice channel
+
     if(!Utils.exists(djCfg['voice-channel'])) return install(false, finishInstallation);
 
     var voiceChannel = null;
@@ -79,6 +82,8 @@ function createDJ(djCfg, manager) {
     djCfg['server'] = voiceChannel.guild_id;
     djCfg['voice-channel'] = voiceChannel.id;
 
+    // Prepare config
+
     if(!Utils.exists(djCfg['rating'])) {
         djCfg['rating'] = {
             'enabled': true,
@@ -96,6 +101,29 @@ function createDJ(djCfg, manager) {
         configModified = true;
     }
 
+    // Find text channels
+
+    var textCh = voiceChannel.guild.textChannels;
+
+    var shCh = djCfg['chat-info']['song-history-channel'];
+    shCh = textCh.filter(c => c.id == shCh || c.name == shCh);
+    shCh = shCh.length > 0 ? shCh[0] : null;
+
+    var infCh = djCfg['chat-info']['info-channel'];
+    infCh = textCh.filter(c => c.id == infCh || c.name == infCh);
+    infCh = infCh.length > 0 ? infCh[0] : null;
+
+    if(shCh != null && shCh.id != djCfg['chat-info']['song-history-channel']) {
+        djCfg['chat-info']['song-history-channel'] = shCh.id;
+        configModified = true;
+    }
+    if(infCh != null && infCh.id != djCfg['chat-info']['info-channel']) {
+        djCfg['chat-info']['info-channel'] = infCh.id;
+        configModified = true;
+    }
+
+    // Initialize DJ
+
     console.log('Initializing DJ in "' + voiceChannel.guild.name + '"');
     manager.create(voiceChannel, DiscordDJ.BotDJ).then(function(dj) {
 
@@ -108,19 +136,18 @@ function createDJ(djCfg, manager) {
             dj.disableRating();
         }
 
-        if(Utils.exists(djCfg['chat-info']['song-history-channel']) ||
-            Utils.exists(djCfg['chat-info']['info-channel'])) {
+        if(shCh != null || infCh != null) {
             dj.enableInfo({
                 nowPlayingPrefix: djCfg['chat-info']['now-playing-prefix'],
-                songHistoryChannel: djCfg['chat-info']['song-history-channel'],
-                infoChannel: djCfg['chat-info']['info-channel']
+                songHistoryChannel: shCh,
+                infoChannel: infCh
             });
         } else {
             dj.disableInfo();
         }
 
     }, function(err) {
-        console.log('An error occurred. The DJ could not be initialized: ' + err);
+        console.log('An error occurred with the connection to the voice channel: ' + err);
     });
 
     return djCfg;
@@ -141,12 +168,13 @@ function handleConnection() {
 
     for(var i = 0; i < config['djs'].length; i++) {
         config['djs'][i] = createDJ(config['djs'][i], manager);
+        if(config['djs'][i] == null) return;
     }
 
     loadStuff(manager);
 
     if(configModified) {
-        fs.writeFile('config.json', JSON.stringify(config), function(error) {
+        fs.writeFile('config.json', JSON.stringify(config, null, 4), function(error) {
             console.log(error == null ? 'Config saved!' : 'An error ocurred while saving the config: ' + error);
         });
     }
@@ -157,6 +185,9 @@ function loadStuff(manager) {
         config['commands'] = {};
         configModified = true;
     }
+
+    if(manager.handler == null) return;
+
     config['commands']['prefixes'] = config['commands']['prefixes'] || ['!', '/'];
 
     config['commands']['prefixes'].forEach(function(prefix) {
