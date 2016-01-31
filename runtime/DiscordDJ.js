@@ -146,6 +146,8 @@ function createDJ(djCfg, manager) {
             dj.disableInfo();
         }
 
+        dj.mode = new DiscordDJ.BotDJ();
+
     }, function(err) {
         console.log('An error occurred with the connection to the voice channel: ' + err);
     });
