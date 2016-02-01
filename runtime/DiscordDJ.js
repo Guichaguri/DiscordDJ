@@ -101,9 +101,27 @@ function createDJ(djCfg, manager) {
         configModified = true;
     }
 
-    // Find text channels
+    if(!Utils.exists(djCfg['mode'])) {
+        djCfg['mode'] = {
+            'type': 'dj',
+            'waitlist': {
+                'limit': 50,
+                'dj-role': null,
+                'list-role': null
+            }
+        };
+        configModified = true;
+    } else {
+        if(djCfg['mode']['type'] != 'dj' && Utils.exists(djCfg['mode']['waitlist'])) {
+            delete djCfg['mode']['waitlist'];
+            configModified = true;
+        }
+    }
 
-    var textCh = voiceChannel.guild.textChannels;
+    // Find text channels and roles
+
+    var guild = voiceChannel.guild;
+    var textCh = guild.textChannels;
 
     var shCh = djCfg['chat-info']['song-history-channel'];
     shCh = textCh.filter(c => c.id == shCh || c.name == shCh);
@@ -120,6 +138,38 @@ function createDJ(djCfg, manager) {
     if(infCh != null && infCh.id != djCfg['chat-info']['info-channel']) {
         djCfg['chat-info']['info-channel'] = infCh.id;
         configModified = true;
+    }
+
+    var mode = null;
+
+    if(djCfg['mode']['type'] == 'dj') {
+        var roles = guild.roles;
+
+        var djRole = djCfg['mode']['waitlist']['dj-role'];
+        djRole = roles.filter(r => r.id == djRole || r.name == djRole);
+        djRole = djRole.length > 0 ? djRole[0] : null;
+
+        var listRole = djCfg['mode']['waitlist']['list-role'];
+        listRole = roles.filter(r => r.id == listRole || r.name == listRole);
+        listRole = listRole.length > 0 ? listRole[0] : null;
+
+        if(djRole != null && djRole.id == djCfg['mode']['waitlist']['dj-role']) {
+            djCfg['mode']['waitlist']['dj-role'] = djRole.id;
+            configModified = true;
+        }
+
+        if(listRole != null && listRole.id == djCfg['mode']['waitlist']['list-role']) {
+            djCfg['mode']['waitlist']['list-role'] = listRole.id;
+            configModified = true;
+        }
+
+        mode = new DiscordDJ.DJMode({
+            'limit': djCfg['mode']['waitlist']['limit'],
+            'dj-role': djRole,
+            'list-role': listRole
+        });
+    } else {
+        mode = null;
     }
 
     // Initialize DJ
@@ -146,7 +196,7 @@ function createDJ(djCfg, manager) {
             dj.disableInfo();
         }
 
-        dj.mode = new DiscordDJ.BotDJ();
+        dj.mode = mode;
 
     }, function(err) {
         console.log('An error occurred with the connection to the voice channel: ' + err);
