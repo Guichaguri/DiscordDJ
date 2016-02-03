@@ -11,7 +11,7 @@ function npmError {
     echo "NPM was not found. Please, install Node.js and NPM"
     echo "http://nodejs.org"
     echo ""
-
+	
     end
 }
 
