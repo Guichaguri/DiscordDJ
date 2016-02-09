@@ -168,6 +168,35 @@ function createDJ(djCfg, manager) {
             'dj-role': djRole,
             'list-role': listRole
         });
+    } else if(djCfg['mode']['type'] == 'playlist') {
+        if(!Utils.exists(djCfg['mode']['playlist']) || !Utils.exists(djCfg['mode']['playlist']['type']) ||
+            !Utils.exists(djCfg['mode']['playlist']['location'])) {
+            djCfg['mode']['playlist'] = {
+                type: 'file',
+                location: ''
+            };
+        }
+        var playlist = null;
+        var loc = djCfg['mode']['playlist']['location'];
+        switch(djCfg['mode']['playlist']['type']) {
+            case 'file':
+                playlist = new DiscordDJ.FilePlaylist(loc);
+                break;
+            case 'directory':
+                playlist = new DiscordDJ.DirectoryPlaylist(loc);
+                break;
+            case 'youtube':
+                playlist = new DiscordDJ.YoutubePlaylist(loc);
+                break;
+            case 'soundcloud':
+                playlist = new DiscordDJ.SoundcloudPlaylist(loc);
+                break;
+        }
+        if(playlist == null) {
+            console.log('Unknown playlist type');
+        } else {
+            mode = new DiscordDJ.PlaylistMode(playlist);
+        }
     } else {
         mode = null;
     }
