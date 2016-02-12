@@ -162,6 +162,37 @@
                 padding: 1% 2.5% 1% 2.5%;
                 box-shadow: 0px 0px 2em rgba(0, 0, 0, 0.5);
             }
+
+            .download {
+                background: #f2f2f2;
+                border-radius: 2px;
+                display: inline-block;
+                padding: 10px 17px;
+                text-align: left;
+                min-width: 300px;
+            }
+            .download em {
+                font-style: normal;
+                font-weight: 300;
+                font-size: smaller;
+                display: block;
+            }
+            .download strong {
+                font-size: larger;
+            }
+            .download .button {
+                float: right;
+                background: #2ecc71;
+                padding: 5px 15px;
+                color: #ffffff;
+                border-radius: 17.5px;
+                line-height: 25px;
+                box-sizing: border-box;
+                margin: 6px 0px;
+            }
+            .download .button:hover {
+                text-decoration: none;
+            }
         </style>
     </head>
     <body>
@@ -174,10 +205,15 @@
             <div style="text-align: center;">
                 <a class="github-button" href="https://github.com/Guichaguri/DiscordDJ" data-icon="octicon-eye" data-style="mega" data-count-href="/Guichaguri/DiscordDJ/watchers" data-count-api="/repos/Guichaguri/DiscordDJ#subscribers_count" data-count-aria-label="# watchers on GitHub" aria-label="Watch DiscordDJ on GitHub">Watch</a>
                 <a class="github-button" href="https://github.com/Guichaguri/DiscordDJ" data-icon="octicon-star" data-style="mega" data-count-href="/Guichaguri/DiscordDJ/stargazers" data-count-api="/repos/Guichaguri/DiscordDJ#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star DiscordDJ on GitHub">Star</a>
-                <p>DiscordDJ is a bot for Discord that let you play music inside a voice channel</p>
+                <p>DiscordDJ is a bot for Discord that plays music inside a voice channel</p>
                 <br>
-                <strong>Work In Progress</strong><br>
+                <strong>Work In Progress - Beta Testing</strong><br>
                 <br>
+                <div class="download">
+                    <a class="button" href="https://github.com/Guichaguri/DiscordDJ/releases/latest" target="_blank">Download</a>
+                    <em>Development Build</em>
+                    <strong>Latest</strong>
+                </div>
             </div>
             <h2>Features</h2>
             <ul>
@@ -187,8 +223,8 @@
                 <li>Play a Shoutcast/Icecast stream</li>
                 <li>
                     Let your users play Youtube videos or Soundcloud tracks
-                <li>Similar to Plug.DJ</li>
-                <li>Wait List and DJ Booth (with optional roles)</li>
+                    <li>Similar to Plug.DJ</li>
+                    <li>Wait List and DJ Booth (with optional roles)</li>
                 </li>
                 <li>Like and Dislikes (more dislikes than likes = auto-skip)</li>
                 <li>Smart Song History</li>
@@ -222,7 +258,39 @@
                 }).click(function() {
                     $(this).parent().toggleClass('hidden');
                 });
+
+                $.ajax({
+                    url: 'https://api.github.com/repos/Guichaguri/DiscordDJ/releases',
+                    dataType: 'jsonp',
+                    success: function(results) {
+                        var data = results.data[0];
+                        var assets = data.assets;
+                        var url = data.html_url;
+                        var name = data.name;
+                        $('.download strong').text(name);
+                        $('.download .button').prop('href', url);
+                        /*for(var o = 0; o < assets.length; o++) {
+                            var download = assets[o];
+                            if(download.name.indexOf('windows') != -1) continue;
+                            var dlurl = download.browser_download_url;
+                            var dlcount = download.download_count;
+                            var upload = download.updated_at; //"2015-09-14T00:45:13Z"
+                            var dlsize = download.size;
+                            //console.log(download);
+                            $('.download .button').prop('href', dlurl);
+                            break;
+                        }*/
+                    }
+                });
             });
+
+            // Analytics
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-73372300-1', 'auto');
+            ga('send', 'pageview');
         </script>
     </body>
 </html>
