@@ -15,7 +15,12 @@ module.exports = function(bot, data, shouldLogin, callback) {
 
     function checkEncoder(cb) {
         var cmds = ["avconv", "ffmpeg", "avconv.exe", "ffmpeg.exe"];
-        if(Utils.exists(data['encoder-path'])) cmds.unshift(data['encoder-path']);
+        if(Utils.exists(data['encoder-path'])) {
+            cmds.unshift(data['encoder-path']);
+        } else {
+            cmds.unshift(process.cwd() + '/ffmpeg/ffmpeg');
+            cmds.unshift(process.cwd() + '/ffmpeg/ffmpeg.exe');
+        }
         var encoder = null;
 
         for(var i = 0; i < cmds.length; i++) {
@@ -80,9 +85,16 @@ module.exports = function(bot, data, shouldLogin, callback) {
                         };
                         data['djs'] = [dj];
 
-                        rl.close();
-                        console.log('Basic information configured! The bot is ready to run now.');
-                        callback(data);
+                        rl.question("Add another server? (Y/N) ", function(answer) {
+                            if(answer.toLowerCase() == 'y') {
+                                server();
+                            } else {
+                                rl.close();
+                                console.log('Basic information configured! The bot is ready to run now.');
+                                callback(data);
+                            }
+                        });
+
                     }
                 }, function() {
                     console.log('The invite link was not accepted');
