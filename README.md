@@ -7,10 +7,10 @@ We have some [development builds](https://github.com/Guichaguri/DiscordDJ/releas
 Some features (not all of them):
 
 * Play a playlist file (pls, m3u)
-* Play a playlist directory (a directory with audio files)
+* Play a playlist directory (a directory with audio/video files)
 * Play a Youtube playlist
 * Play a Soundcloud playlist
-* Play a Shoutcast/Icecast stream
+* Play a Shoutcast/Icecast/Radionomy stream
 * Play a remote audio file/stream
 * Let your users play Youtube videos or Soundcloud tracks
   * Similar to Plug.DJ

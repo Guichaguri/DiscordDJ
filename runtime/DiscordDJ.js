@@ -84,6 +84,16 @@ function createDJ(djCfg, manager) {
 
     // Prepare config
 
+    if(!Utils.exists(djCfg['bitrate'])) {
+        djCfg['bitrate'] = 64;
+        configModified = true;
+    }
+
+    if(!Utils.exists(djCfg['changeStatus'])) {
+        djCfg['changeStatus'] = false;
+        configModified = true;
+    }
+
     if(!Utils.exists(djCfg['rating'])) {
         djCfg['rating'] = {
             'enabled': true,
@@ -208,6 +218,16 @@ function createDJ(djCfg, manager) {
         }
 
         dj.mode = mode;
+        dj.bitrate = djCfg['bitrate'];
+
+        if(djCfg['changeStatus']) {
+            dj.on('play', function() {
+                bot.User.setStatus(null, {name: dj.playable.getTitle()});
+            });
+            dj.on('skip', function() {
+                bot.User.setStatus(null, null);
+            });
+        }
 
     }, function(err) {
         console.log('An error occurred with the connection to the voice channel: ' + err);
