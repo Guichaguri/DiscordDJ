@@ -116,6 +116,11 @@ function createDJ(djCfg, manager) {
             delete djCfg['mode']['waitlist'];
             configModified = true;
         }
+
+        if(djCfg['mode']['type'] != 'playlist' && Utils.exists(djCfg['mode']['playlists'])) {
+            delete djCfg['mode']['playlists'];
+            configModified = true;
+        }
     }
 
     // Find text channels and roles
@@ -169,34 +174,11 @@ function createDJ(djCfg, manager) {
             'list-role': listRole
         });
     } else if(djCfg['mode']['type'] == 'playlist') {
-        if(!Utils.exists(djCfg['mode']['playlist']) || !Utils.exists(djCfg['mode']['playlist']['type']) ||
-            !Utils.exists(djCfg['mode']['playlist']['location'])) {
-            djCfg['mode']['playlist'] = {
-                type: 'file',
-                location: ''
-            };
+        if(!Utils.exists(djCfg['mode']['playlists'])) {
+            djCfg['mode']['playlists'] = [];
+            configModified = true;
         }
-        var playlist = null;
-        var loc = djCfg['mode']['playlist']['location'];
-        switch(djCfg['mode']['playlist']['type']) {
-            case 'file':
-                playlist = new DiscordDJ.FilePlaylist(loc);
-                break;
-            case 'directory':
-                playlist = new DiscordDJ.DirectoryPlaylist(loc);
-                break;
-            case 'youtube':
-                playlist = new DiscordDJ.YoutubePlaylist(loc);
-                break;
-            case 'soundcloud':
-                playlist = new DiscordDJ.SoundcloudPlaylist(loc);
-                break;
-        }
-        if(playlist == null) {
-            console.log('Unknown playlist type');
-        } else {
-            mode = new DiscordDJ.PlaylistMode(playlist);
-        }
+        mode = new DiscordDJ.PlaylistMode(djCfg['mode']['playlists']);
     } else {
         mode = null;
     }
@@ -246,6 +228,15 @@ function handleConnection() {
     if(!Utils.exists(config['djs'])) return install(false, finishInstallation);
 
     var manager = new DiscordDJ.DJManager(bot);
+
+    if(!Utils.exists(config['keys'])) {
+        config['keys'] = {
+            'youtube': '',
+            'soundcloud': ''
+        };
+    }
+    manager.setYoutubeKey(config['keys']['youtube']);
+    manager.setSoundcloudKey(config['keys']['soundcloud']);
 
     for(var i = 0; i < config['djs'].length; i++) {
         config['djs'][i] = createDJ(config['djs'][i], manager);

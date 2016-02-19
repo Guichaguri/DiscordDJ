@@ -1,13 +1,14 @@
 {
   "name": "discord-dj",
   "description": "Discord DJ Bot. Let you play music in your server. Inspired by PlugDJ",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "lib/index.js",
   "author": "Guichaguri",
   "license": "LGPL-2.0",
   "dependencies": {
     "discordie": "0.1.2",
     "icy": "^2.0.0",
+    "node-chiptune": "^1.0.0",
     "ytdl-core": "^0.7.7"
   },
   "repository": {
