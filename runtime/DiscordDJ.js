@@ -29,6 +29,15 @@ function install(shouldLogin, callback) {
     configModified = true;
 }
 
+function initDecoders() {
+    if(!Utils.exists(config['decoder-path'])) {
+        Utils.registerDecoder(new DiscordDJ.FFmpegDecoder(null));
+    } else {
+        Utils.registerDecoder(new DiscordDJ.FFmpegDecoder(config['decoder-path']));
+    }
+    Utils.registerDecoder(new DiscordDJ.ChiptuneDecoder());
+}
+
 function connect() {
     var credentials = {}, hasCredentials = false;
 
@@ -311,6 +320,8 @@ function finishInstallation(cfg) {
     if(Utils.exists(cfg)) config = cfg;
     handleConnection();
 }
+
+initDecoders();
 
 if(config == null) {
     config = {};

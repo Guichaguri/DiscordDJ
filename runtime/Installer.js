@@ -13,10 +13,10 @@ module.exports = function(bot, data, shouldLogin, callback) {
 
     console.log('Starting installation...');
 
-    function checkEncoder(cb) {
+    function checkDecoder(cb) {
         var cmds = ["avconv", "ffmpeg", "avconv.exe", "ffmpeg.exe"];
-        if(Utils.exists(data['encoder-path'])) {
-            cmds.unshift(data['encoder-path']);
+        if(Utils.exists(data['decoder-path'])) {
+            cmds.unshift(data['decoder-path']);
         } else {
             cmds.unshift(process.cwd() + '/ffmpeg/ffmpeg');
             cmds.unshift(process.cwd() + '/ffmpeg/ffmpeg.exe');
@@ -26,21 +26,21 @@ module.exports = function(bot, data, shouldLogin, callback) {
         for(var i = 0; i < cmds.length; i++) {
             var p = child_process.spawnSync(cmds[i]);
             if(!p.error) {
-                console.log('Encoder found.');
+                console.log('Decoder found.');
                 encoder = cmds[i];
                 break;
             }
         }
 
         if(encoder == null) {
-            console.log('The encoder was not found.');
+            console.log('The decoder was not found.');
             console.log('Please, install FFmpeg or Libav');
             console.log('After you have done that, press enter (leaving it blank)');
             console.log('If it still doesn\'t work, paste the executable path (Example: C://ffmpeg/ffmpeg.exe)');
             console.log('http://guichaguri.github.io/DiscordDJ/');
             rl.question("Executable Path: ", function(path) {
-                data['encoder-path'] = path;
-                checkEncoder(cb);
+                data['decoder-path'] = path;
+                checkDecoder(cb);
             });
         } else {
             cb();
@@ -108,11 +108,11 @@ module.exports = function(bot, data, shouldLogin, callback) {
 
         bot.Dispatcher.on(Discordie.Events.GATEWAY_READY, server);
         bot.Dispatcher.on(Discordie.Events.DISCONNECTED, disconnected);
-        checkEncoder(login);
+        checkDecoder(login);
 
     } else {
 
-        checkEncoder(server);
+        checkDecoder(server);
 
     }
 };
