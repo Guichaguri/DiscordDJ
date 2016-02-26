@@ -6,10 +6,10 @@
   "author": "Guichaguri",
   "license": "LGPL-2.0",
   "dependencies": {
-    "discordie": "0.1.2",
-    "icy": "^2.0.0",
-    "node-chiptune": "^1.0.0",
-    "ytdl-core": "^0.7.7"
+    "discordie": "0.2.2",
+    "icy": "2.1.0",
+    "node-chiptune": "1.0.0",
+    "ytdl-core": "^0.7.10"
   },
   "repository": {
     "type": "git",
