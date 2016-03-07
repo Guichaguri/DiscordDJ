@@ -30,6 +30,7 @@ function install(shouldLogin, callback) {
 }
 
 function initDecoders() {
+    Utils.setDecoders([]);
     if(!Utils.exists(config['decoder-path'])) {
         Utils.registerDecoder(new DiscordDJ.FFmpegDecoder(null));
     } else {
@@ -317,15 +318,15 @@ function handleDisconnection() {
 }
 
 function finishInstallation(cfg) {
+    initDecoders();
     if(Utils.exists(cfg)) config = cfg;
     handleConnection();
 }
-
-initDecoders();
 
 if(config == null) {
     config = {};
     install(true, finishInstallation);
 } else {
+    initDecoders();
     connect();
 }
