@@ -318,8 +318,10 @@ function handleDisconnection() {
 }
 
 function finishInstallation(cfg) {
-    initDecoders();
-    if(Utils.exists(cfg)) config = cfg;
+    if(Utils.exists(cfg)) {
+        config = cfg;
+        initDecoders();
+    }
     handleConnection();
 }
 
@@ -330,3 +332,18 @@ if(config == null) {
     initDecoders();
     connect();
 }
+
+process.on("uncaughtException", function(err) {
+    if(err.code != "ECONNRESET") {
+        console.log(err);
+        console.log(err.stack);
+        fs.writeFile('crash-report.log', err.stack, function() {
+            console.log('This error was written in "crash-report.log".');
+            console.log('Open an issue at https://github.com/Guichaguri/DiscordDJ/');
+            console.log('Keep in mind that DiscordDJ is still WIP');
+            process.exit(0);
+        });
+    } else {
+        console.log("An ECONNRESET was thrown. It's probably not a real error.");
+    }
+});
