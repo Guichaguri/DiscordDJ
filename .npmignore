@@ -5,3 +5,4 @@ examples/
 .idea/
 setup-bot.*
 start-bot.*
+crash-report.log

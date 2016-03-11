@@ -1,10 +1,31 @@
+var fs = require('fs');
+
+process.on("uncaughtException", function(err) {
+    if(err.code != "ECONNRESET") {
+        console.log(err.message);
+        console.log(err.stack);
+
+        var detailed = 'DiscordDJ Crash Log\n\n';
+        detailed += 'Message: ' + err.message + '\n';
+        detailed += 'Code: ' + err.code + '\n\n';
+        detailed += err.stack;
+        fs.writeFile('crash-report.log', detailed, function() {
+            console.log('This error was written in "crash-report.log".');
+            console.log('Open an issue at https://github.com/Guichaguri/DiscordDJ/');
+            console.log('Keep in mind that DiscordDJ is still WIP');
+            process.exit(0);
+        });
+    } else {
+        console.log("An ECONNRESET was thrown. It's probably not a real error.");
+    }
+});
+
 var Utils = require('../lib/Logic/Utils.js');
 var DiscordDJ = require('../lib/index.js');
 
 var Special = require('./Special.js');
 
-var Discordie = require('discordie');
-var fs = require('fs');
+var Discordie = Utils.include('discordie');
 
 if(Discordie == null) {
     console.log('DiscordDJ is not installed correctly.');
@@ -332,18 +353,3 @@ if(config == null) {
     initDecoders();
     connect();
 }
-
-process.on("uncaughtException", function(err) {
-    if(err.code != "ECONNRESET") {
-        console.log(err);
-        console.log(err.stack);
-        fs.writeFile('crash-report.log', err.stack, function() {
-            console.log('This error was written in "crash-report.log".');
-            console.log('Open an issue at https://github.com/Guichaguri/DiscordDJ/');
-            console.log('Keep in mind that DiscordDJ is still WIP');
-            process.exit(0);
-        });
-    } else {
-        console.log("An ECONNRESET was thrown. It's probably not a real error.");
-    }
-});

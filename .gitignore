@@ -2,3 +2,4 @@ config.json
 node_modules/
 tests/
 .idea/
+crash-report.log
