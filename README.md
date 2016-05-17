@@ -1,6 +1,10 @@
 # [DiscordDJ](http://guichaguri.github.io/DiscordDJ/)
 Discord DJ Bot. Let you play music in your server. Inspired by PlugDJ
 
+## Status
+
+Since the official Discord API was released, the bot stopped working. I'll update it, but that will take time. Sorry for the inconvenience.
+
 ## This is a Work-in-Progress project
 
 We have some [development builds](https://github.com/Guichaguri/DiscordDJ/releases), expect broken stuff.
