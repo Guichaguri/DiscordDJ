@@ -1,8 +1,0 @@
-config.json
-node_modules/
-tests/
-examples/
-.idea/
-setup-bot.*
-start-bot.*
-crash-report.log

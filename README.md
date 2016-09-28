@@ -1,28 +1,24 @@
-# [DiscordDJ](http://guichaguri.github.io/DiscordDJ/)
-Discord DJ Bot. Let you play music in your server. Inspired by PlugDJ
+# DiscordDJ
 
-## Status
+**NEWS** DiscordDJ is being totally recoded! Check [here](https://github.com/Guichaguri/DiscordDJ/projects/1) for the progress
 
-Since the official Discord API was released, the bot stopped working. I'll update it, but that will take time. Sorry for the inconvenience.
+## Features
+*   Play a video or playlist from YouTube
+*   Play a track or set from Soundcloud
+*   Play a track or playlist from Spotify
+*   Play a stream from Icecast/Shoutcast/Radionomy
+*   Play audio and video files
+*   Play a playlist file
+*   Full control over the behavior with **Components**
+*   Built on its own API wrapper for a faster experience
+*   Open Source
+*   Developer API (Soon, you will be able to implement your own components, playables, playlists, encoders and decoders)
 
-## This is a Work-in-Progress project
-
-We have some [development builds](https://github.com/Guichaguri/DiscordDJ/releases), expect broken stuff.
-Some features (not all of them):
-
-* Play a playlist file (pls, m3u)
-* Play a playlist directory (a directory with audio/video files)
-* Play a Youtube playlist
-* Play a Soundcloud playlist
-* Play a Shoutcast/Icecast/Radionomy stream
-* Play a remote audio file/stream
-* Let your users play Youtube videos or Soundcloud tracks
-  * Similar to Plug.DJ
-  * Wait List and DJ Booth (with optional roles)
-* Like and Dislikes (more dislikes than likes = auto-skip)
-* Smart Song History
-* Smart Information
-* One voice connection for each server at the same time (this feature is a courtesy of [qeled](https://github.com/qeled)'s wizardry)
-* Flexible configuration
-* Open Source
-* Developer API (can be integrated with other bots and have addons)
+## Optional Modules
+All the modules below (except node-chiptune) require node-gyp, which is known for causing problems mainly on Windows, that's why they're optional
+*   lame: For native mp3 decoding (no FFmpeg/avconv needed)
+*   node-chiptune: For decoding tracker music
+*   node-opus: For faster Opus encoding
+*   sodium: For faster audio encryption
+*   bufferutil: For faster WebSockets
+*   utf-8-validate: For faster WebSockets
