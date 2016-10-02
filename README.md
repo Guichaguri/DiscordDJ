@@ -1,4 +1,5 @@
-# DiscordDJ
+# [DiscordDJ](http://guichaguri.github.io/DiscordDJ/)
+Discord DJ Bot. Let you play music in your server. Inspired by PlugDJ
 
 **NEWS** DiscordDJ is being totally recoded! Check [here](https://github.com/Guichaguri/DiscordDJ/projects/1) for the progress
 
